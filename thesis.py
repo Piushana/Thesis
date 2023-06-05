@@ -2,7 +2,7 @@
 """
 Created on Tue Mar 28 13:14:35 2023
 
-@author: piushana
+@author: pabeygun21
 """
 
 # Import the necessary libraries
@@ -65,14 +65,18 @@ ResponsesList = Responses['responses']
 #call the function findAnswer()
 #'6fbd522c'-Question_id
 tones = []
-for x in range (40):
-    answer1 = findAnswer (ResponsesList, x, '6fbd522c')
+
+for x in range(40):
+    answer1 = findAnswer(ResponsesList, x, '6fbd522c')
     toneAnswer = toneAnalyze(answer1)
     toneAnswer = toneAnswer['emotion']['document']['emotion']
-    toneAnswer['tone'] = max(toneAnswer.keys(), key=lambda k: toneAnswer[k])
+    max_tone = max(toneAnswer.keys(), key=lambda k: toneAnswer[k])
+    if toneAnswer[max_tone] >= 0.5:
+        toneAnswer['tone'] = max_tone
+    else:
+        toneAnswer['tone'] = 'no emotion'
     toneAnswer['Answer'] = answer1
     tones.append(toneAnswer)
-
     
 field_names = ['Answer', 'sadness', 'joy','fear','disgust','anger','tone']
 # open CSV file
@@ -92,6 +96,6 @@ df = pd.read_csv('data.csv')
 styled_df = df.style.applymap(colorize, subset=['sadness', 'joy', 'fear', 'disgust', 'anger'])
 
 # Save the coloured DataFrame as an Excel workbook
-styled_df.to_excel('Final.xlsx', engine='openpyxl', index=False)
+styled_df.to_excel('FinalW.xlsx', engine='openpyxl', index=False)
 
 
